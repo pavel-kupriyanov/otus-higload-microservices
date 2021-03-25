@@ -1,0 +1,9 @@
+{
+  "UVICORN": {
+    "ASGI_PATH": "web:app",
+    "HOST": "0.0.0.0",
+    "PORT": 8000,
+    "WORKERS": 4
+  }
+}
+
