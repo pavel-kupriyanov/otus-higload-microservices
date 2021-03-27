@@ -7,8 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
 
 from api_gateway.settings import ROOT_DIR
-
-from .api import router
+from api_gateway.api import router
 
 app = FastAPI()
 
@@ -19,8 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-STATIC_DIR = os.path.join(ROOT_DIR, 'web/app/frontend/static')
-INDEX = os.path.join(ROOT_DIR, 'web/app/frontend/index.html')
+STATIC_DIR = os.path.join(ROOT_DIR, 'app/frontend/static')
+INDEX = os.path.join(ROOT_DIR, 'app/frontend/index.html')
 
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 

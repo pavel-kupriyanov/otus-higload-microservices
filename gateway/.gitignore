@@ -141,6 +141,7 @@ cython_debug/
 tests/settings/settings.json
 api_gateway/settings/settings.json
 api_gateway/settings/_settings.json
+api_gateway/_settings.json
 
-api_gateway/web/app/.idea
-api_gateway/web/app/node_modules
+api_gateway/app/.idea
+api_gateway/app/node_modules

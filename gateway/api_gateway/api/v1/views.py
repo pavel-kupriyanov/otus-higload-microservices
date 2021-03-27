@@ -2,7 +2,7 @@ from typing import List
 from fastapi import APIRouter, WebSocket
 import websockets
 
-from api_gateway.utils.core import generate_handler
+from api_gateway.utils import generate_handler
 from api_gateway.models.response import (
     AccessToken,
     AuthUser,

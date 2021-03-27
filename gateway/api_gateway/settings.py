@@ -11,7 +11,7 @@ class ServiceSettings(BaseModel):
 
 
 class UvicornSettings(BaseModel):
-    ASGI_PATH: str = 'social_network:application'
+    ASGI_PATH: str = 'main:app'
     HOST: str = '0.0.0.0'
     PORT: int = int(os.getenv('PORT') or 10000)
     WORKERS = 1
@@ -40,3 +40,16 @@ def deep_merge(first: dict, second: dict) -> dict:
             res[key] = value
 
     return res
+
+
+ROOT_DIR = os.path.dirname((os.path.abspath(__file__)))
+CONFIG_PATH = os.path.join(ROOT_DIR, '_settings.json')
+
+
+class Settings(BaseSettings):
+    DEBUG: bool = True
+    UVICORN: UvicornSettings = UvicornSettings()
+    MONOLITH: ServiceSettings = ServiceSettings()
+
+
+settings = Settings.from_json(CONFIG_PATH)

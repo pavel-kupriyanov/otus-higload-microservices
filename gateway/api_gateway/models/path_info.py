@@ -2,8 +2,7 @@ from typing import Dict, Optional, Type, Any
 
 from pydantic import BaseModel
 
-from api_gateway.settings.base import ServiceSettings
-from api_gateway.settings import settings
+from api_gateway.settings import ServiceSettings, settings
 
 
 class PathInfo(BaseModel):
