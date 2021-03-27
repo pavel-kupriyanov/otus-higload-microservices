@@ -7,7 +7,7 @@ from pydantic import BaseModel, BaseSettings as PydanticSettings
 
 class ServiceSettings(BaseModel):
     HOST: str = '0.0.0.0'
-    PORT: int = 9000
+    PORT: int = 9999
 
 
 class UvicornSettings(BaseModel):

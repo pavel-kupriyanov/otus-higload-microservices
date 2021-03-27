@@ -8,6 +8,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api_gateway.settings import ROOT_DIR
 
+from .api import router
+
 app = FastAPI()
 
 app.add_middleware(
@@ -23,7 +25,7 @@ INDEX = os.path.join(ROOT_DIR, 'web/app/frontend/index.html')
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
 
-# app.include_router(api_router, prefix='/api')
+app.include_router(router, prefix='/api')
 
 
 @app.get('{full_path:path}', response_class=HTMLResponse)
