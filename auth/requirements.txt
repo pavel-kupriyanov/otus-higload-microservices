@@ -1,0 +1,11 @@
+Cython==0.29.21
+async_lru==1.0.2
+aiomysql==0.0.20
+email-validator==1.1.2
+fastapi==0.61.2
+fastapi-utils==0.2.1
+pydantic==1.7.2
+pytest==6.2.1
+pytest-asyncio==0.14.0
+uvicorn==0.12.2
+yoyo-migrations==7.2.0
