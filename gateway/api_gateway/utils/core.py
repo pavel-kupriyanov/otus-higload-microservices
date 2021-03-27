@@ -1,12 +1,12 @@
 from typing import Callable, Type, Optional
 from inspect import signature, Parameter
 
-from fastapi import Request, APIRouter, Header, WebSocket
+from fastapi import Request, APIRouter, Header
 from fastapi.responses import Response
 
 import httpx
 
-from api_gateway.models import PathInfo
+from api_gateway.models.path_info import PathInfo
 
 
 def add_param(func: Callable, name: str, annotation: Type,

@@ -70,7 +70,7 @@ services:
     depends_on:
       - zookeeper
     volumes:
-      - kafka-data2:/kafka
+      - kafka-data3:/kafka
     ports:
       - 29092:29092
       - 9092:9092
@@ -113,7 +113,7 @@ volumes:
   mysql-master-db:
   mysql-shard0:
   mysql-shard1:
-  kafka-data2:
+  kafka-data3:
   rabbitmq-data:
   rabbitmq-logs:
 
