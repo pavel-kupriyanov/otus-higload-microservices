@@ -6,3 +6,4 @@ pydantic[email]==1.8.1
 uvicorn==0.13.4
 dnspython==2.1.0
 email-validator==1.1.2
+websockets==8.1

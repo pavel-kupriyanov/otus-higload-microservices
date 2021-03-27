@@ -1,7 +1,7 @@
 from typing import Callable, Type, Optional
 from inspect import signature, Parameter
 
-from fastapi import Request, APIRouter, Header
+from fastapi import Request, APIRouter, Header, WebSocket
 from fastapi.responses import Response
 
 import httpx

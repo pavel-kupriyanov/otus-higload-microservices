@@ -1,10 +1,7 @@
 from typing import List
-from fastapi import APIRouter, Request
-from fastapi.responses import Response
+from fastapi import APIRouter, WebSocket
+import websockets
 
-import httpx
-
-from api_gateway.settings import settings
 from api_gateway.utils.core import generate_handler
 from api_gateway.models.response import (
     AccessToken,
@@ -25,6 +22,7 @@ from api_gateway.models.request import (
     NewCreatePayload
 )
 from api_gateway.models.path_info import PathInfo
+from api_gateway.settings import settings
 
 router = APIRouter()
 endpoints = []
@@ -294,18 +292,15 @@ for name, path_info in MAPPING.items():
     endpoints.append(handler)
 
 
-@router.get('{path:path}')
-async def gateway(path: str, request: Request):
-    monolith = settings.MONOLITH
-    response = httpx.request(
-        url=f'http://{monolith.HOST}:{monolith.PORT}{request.url.path}',
-        method=request.method,
-        params=request.query_params,
-        content=await request.body(),
-        headers=[(k, v) for k, v in request.headers.items()]
-    )
-    return Response(
-        status_code=response.status_code,
-        content=response.content,
-        headers=response.headers
-    )
+# todo: rewrite universal
+@router.websocket('/news/ws')
+async def feed_websocket_proxy(client_ws: WebSocket):
+    host, port = settings.MONOLITH.HOST, settings.MONOLITH.PORT
+    uri = f'ws://{host}:{port}/api/v1/news/ws'
+    await client_ws.accept()
+    msg = await client_ws.receive_text()
+    async with websockets.connect(uri) as server_ws:
+        await server_ws.send(msg)
+        while True:
+            msg = await server_ws.recv()
+            await client_ws.send_text(msg)
