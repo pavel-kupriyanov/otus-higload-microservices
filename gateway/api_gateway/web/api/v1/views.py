@@ -30,7 +30,7 @@ endpoints = []
 MAPPING = {
     'login': PathInfo(
         path='/auth/login/',
-        service_path='/api/v1/auth/login/',
+        service_path='/auth/login/',
         request_model=LoginPayload,
         response_model=AccessToken,
         status_code=201,
@@ -42,7 +42,7 @@ MAPPING = {
     ),
     'register': PathInfo(
         path='/auth/register/',
-        service_path='/api/v1/auth/register/',
+        service_path='/auth/register/',
         request_model=RegistrationPayload,
         response_model=AuthUser,
         status_code=201,
@@ -54,7 +54,7 @@ MAPPING = {
     ),
     'create_friendship': PathInfo(
         path='/friendships/{user_id}/',
-        service_path='/api/v1/friendships/{user_id}/',
+        service_path='/friendships/{user_id}/',
         response_model=FriendRequest,
         status_code=201,
         method='POST',
@@ -69,7 +69,7 @@ MAPPING = {
     ),
     'cancel_friendship': PathInfo(
         path='/friendships/{id}/',
-        service_path='/api/v1/friendships/{id}/',
+        service_path='/friendships/{id}/',
         method='DELETE',
         authorized=True,
         path_params={'id': int},
@@ -82,7 +82,7 @@ MAPPING = {
     ),
     'get_friendship': PathInfo(
         path='/friendships/{id}/',
-        service_path='/api/v1/friendships/{id}/',
+        service_path='/friendships/{id}/',
         response_model=FriendRequest,
         status_code=200,
         method='GET',
@@ -97,7 +97,7 @@ MAPPING = {
     ),
     'decline_friend_request': PathInfo(
         path='/friendships/decline/{id}/',
-        service_path='/api/v1/friendships/decline/{id}/',
+        service_path='/friendships/decline/{id}/',
         method='PUT',
         authorized=True,
         path_params={'id': int},
@@ -110,7 +110,7 @@ MAPPING = {
     ),
     'accept_friend_request': PathInfo(
         path='/friendships/accept/{id}/',
-        service_path='/api/v1/friendships/accept/{id}/',
+        service_path='/friendships/accept/{id}/',
         method='PUT',
         response_model=Friendship,
         authorized=True,
@@ -125,7 +125,7 @@ MAPPING = {
     ),
     'delete_friendship': PathInfo(
         path='/friendships/friendship/{friend_id}/',
-        service_path='/api/v1/friendships/friendship/{friend_id}/',
+        service_path='/friendships/friendship/{friend_id}/',
         method='DELETE',
         authorized=True,
         path_params={'friend_id': int},
@@ -136,7 +136,7 @@ MAPPING = {
     ),
     'friend_request_list': PathInfo(
         path='/friendships/',
-        service_path='/api/v1/friendships/',
+        service_path='/friendships/',
         method='GET',
         response_model=List[FriendRequest],
         authorized=True,
@@ -147,7 +147,7 @@ MAPPING = {
     ),
     'create_hobby': PathInfo(
         path='/hobbies/',
-        service_path='/api/v1/hobbies/',
+        service_path='/hobbies/',
         request_model=HobbyCreatePayload,
         response_model=Hobby,
         status_code=201,
@@ -160,7 +160,7 @@ MAPPING = {
     ),
     'get_hobby': PathInfo(
         path='/hobbies/{id}/',
-        service_path='/api/v1/hobbies/{id}/',
+        service_path='/hobbies/{id}/',
         response_model=Hobby,
         status_code=200,
         method='GET',
@@ -172,7 +172,7 @@ MAPPING = {
     ),
     'get_hobbies': PathInfo(
         path='/hobbies/',
-        service_path='/api/v1/hobbies/',
+        service_path='/hobbies/',
         response_model=List[Hobby],
         status_code=200,
         method='GET',
@@ -182,7 +182,7 @@ MAPPING = {
     ),
     'create_message': PathInfo(
         path='/messages/',
-        service_path='/api/v1/messages/',
+        service_path='/messages/',
         request_model=MessageCreatePayload,
         response_model=Message,
         status_code=201,
@@ -196,7 +196,7 @@ MAPPING = {
     ),
     'get_messages': PathInfo(
         path='/messages/',
-        service_path='/api/v1/messages/',
+        service_path='/messages/',
         response_model=List[Message],
         status_code=200,
         method='GET',
@@ -207,7 +207,7 @@ MAPPING = {
     ),
     'create_new': PathInfo(
         path='/news/',
-        service_path='/api/v1/news/',
+        service_path='/news/',
         request_model=NewCreatePayload,
         response_model=New,
         status_code=201,
@@ -220,7 +220,7 @@ MAPPING = {
     ),
     'get_feed': PathInfo(
         path='/news/feed/',
-        service_path='/api/v1/news/feed/',
+        service_path='/news/feed/',
         response_model=List[New],
         status_code=200,
         method='GET',
@@ -231,7 +231,7 @@ MAPPING = {
     ),
     'get_user_news': PathInfo(
         path='/news/{user_id}/',
-        service_path='/api/v1/news/{user_id}/',
+        service_path='/news/{user_id}/',
         response_model=List[New],
         status_code=200,
         method='GET',
@@ -242,7 +242,7 @@ MAPPING = {
     ),
     'get_users': PathInfo(
         path='/users/',
-        service_path='/api/v1/users/',
+        service_path='/users/',
         response_model=List[User],
         status_code=200,
         method='GET',
@@ -252,7 +252,7 @@ MAPPING = {
     ),
     'get_user': PathInfo(
         path='/users/{id}/',
-        service_path='/api/v1/users/{id}/',
+        service_path='/users/{id}/',
         response_model=User,
         status_code=200,
         method='GET',
@@ -264,7 +264,7 @@ MAPPING = {
     ),
     'add_hobby': PathInfo(
         path='/users/hobbies/{id}/',
-        service_path='/api/v1/users/hobbies/{id}/',
+        service_path='/users/hobbies/{id}/',
         response_model=UserHobby,
         status_code=200,
         method='PUT',
@@ -277,7 +277,7 @@ MAPPING = {
     ),
     'remove_hobby': PathInfo(
         path='/users/hobbies/{id}/',
-        service_path='/api/v1/users/hobbies/{id}/',
+        service_path='/users/hobbies/{id}/',
         method='DELETE',
         path_params={'id': int},
         authorized=True,
@@ -296,7 +296,7 @@ for name, path_info in MAPPING.items():
 @router.websocket('/news/ws')
 async def feed_websocket_proxy(client_ws: WebSocket):
     host, port = settings.MONOLITH.HOST, settings.MONOLITH.PORT
-    uri = f'ws://{host}:{port}/api/v1/news/ws'
+    uri = f'ws://{host}:{port}/news/ws'
     await client_ws.accept()
     msg = await client_ws.receive_text()
     async with websockets.connect(uri) as server_ws:
