@@ -5,8 +5,10 @@ from fastapi import (
     APIRouter,
     Depends,
     Header,
-    Request
+    Request,
+    HTTPException
 )
+from httpx import AsyncClient
 from fastapi_utils.cbv import cbv
 
 from social_network_messages.settings import settings
@@ -35,6 +37,14 @@ async def get_user_id(x_user_id: Optional[int] = Header(None)) -> Optional[int]:
     return x_user_id
 
 
+async def is_user_exists(user_id: int) -> bool:
+    gateway = settings.API_GATEWAY
+    url = f'http://{gateway.HOST}:{gateway.PORT}'
+    async with AsyncClient(base_url=url) as client:
+        response = await client.get(f'/api/vi/{user_id}/')
+    return not response.is_error
+
+
 @cbv(router)
 class MessagesViewSet:
     user_id: Optional[int] = Depends(get_user_id)
@@ -52,6 +62,8 @@ class MessagesViewSet:
                  })
     @authorize_only
     async def create(self, p: MessageCreatePayload) -> Message:
+        if not (await is_user_exists(p.to_user_id)):
+            raise HTTPException(status_code=404)
         key = self.get_key(p.to_user_id)
         return await self.messages_manager.create(key, self.user_id, p.text)
 

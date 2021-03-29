@@ -29,7 +29,7 @@ class Settings(BaseSettings):
     REDIS: RedisSettings = RedisSettings()
     RABBIT: RabbitMQSettings = RabbitMQSettings()
     NEWS_CACHE: NewsCacheSettings = NewsCacheSettings()
-    AUTH_SERVICE = AuthServiceSettings = AuthServiceSettings()
+    AUTH_SERVICE: AuthServiceSettings = AuthServiceSettings()
     TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7
     BASE_PAGE_LIMIT = 10000
 

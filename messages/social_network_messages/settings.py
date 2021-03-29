@@ -32,6 +32,11 @@ class MasterSlaveDatabaseSettings(BaseModel):
     SLAVES: List[DatabaseSettings] = []
 
 
+class ApiGatewaySettings(BaseModel):
+    HOST: str = 'localhost'
+    PORT: int = 8000
+
+
 class BaseSettings(PydanticSettings):
     DEBUG: bool
     UVICORN: UvicornSettings
@@ -75,6 +80,7 @@ class Settings(BaseSettings):
         )
     )
     BASE_PAGE_LIMIT: int = 100
+    API_GATEWAY: ApiGatewaySettings = ApiGatewaySettings()
 
 
 settings = Settings.from_json(CONFIG_PATH)
