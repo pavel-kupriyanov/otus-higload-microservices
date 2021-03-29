@@ -1,0 +1,12 @@
+{
+  "DATABASE": {
+    "MASTER": {
+      "HOST": "localhost",
+      "PORT": 3446,
+      "USER": "otus",
+      "PASSWORD": "otus",
+      "NAME": "otus"
+    },
+    "SLAVES": []
+  }
+}

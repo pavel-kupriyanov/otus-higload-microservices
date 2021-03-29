@@ -10,10 +10,7 @@ from httpx import AsyncClient
 
 from social_network.settings import settings
 from social_network.db.models import AuthUser, Timestamp
-from social_network.db.managers import (
-    AuthUserManager,
-    AccessTokenManager
-)
+from social_network.db.managers import AuthUserManager
 from social_network.db.exceptions import RowsNotFoundError
 from social_network.utils.security import hash_password
 
@@ -24,10 +21,7 @@ from .models import (
     RegistrationPayload
 )
 
-from ..depends import (
-    get_access_token_manager,
-    get_auth_user_manager
-)
+from ..depends import get_auth_user_manager
 
 
 class AccessToken(BaseModel):
@@ -43,9 +37,6 @@ router = APIRouter()
 @cbv(router)
 class AuthViewSet:
     user_manager: AuthUserManager = Depends(get_auth_user_manager)
-    access_token_manager: AccessTokenManager = Depends(
-        get_access_token_manager
-    )
 
     @router.post('/login/', status_code=201, response_model=AccessToken,
                  responses={

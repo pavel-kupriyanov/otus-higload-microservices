@@ -48,16 +48,6 @@ class Hobby(BaseModel):
 TIMESTAMP_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
-class AccessToken(BaseModel):
-    _table_name = 'access_tokens'
-    _fields = ('id', 'value', 'user_id', 'expired_at')
-    _datetime_fields = ('expired_at',)
-
-    value: str
-    user_id: int
-    expired_at: Timestamp
-
-
 class Gender(str, Enum):
     MALE = 'MALE'
     FEMALE = 'FEMALE'

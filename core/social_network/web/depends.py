@@ -10,7 +10,6 @@ from fastapi import (
 from social_network.db.models import User
 from social_network.db.managers import (
     AuthUserManager,
-    AccessTokenManager,
     FriendRequestManager,
     UserManager,
     FriendshipManager,
@@ -53,12 +52,6 @@ def get_user_manager(injector=Depends(get_injector_depends)) -> UserManager:
 def get_auth_user_manager(injector=Depends(get_injector_depends)) \
         -> AuthUserManager:
     return injector.get_manager(AuthUserManager)
-
-
-@lru_cache(1)
-def get_access_token_manager(injector=Depends(get_injector_depends)) \
-        -> AccessTokenManager:
-    return injector.get_manager(AccessTokenManager)
 
 
 @lru_cache(1)
