@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     UVICORN: UvicornSettings = UvicornSettings()
     MONOLITH: ServiceSettings = ServiceSettings()
+    MESSAGES: ServiceSettings = ServiceSettings(PORT=10000)
     AUTH: ServiceSettings = ServiceSettings(PORT=9900)
 
 

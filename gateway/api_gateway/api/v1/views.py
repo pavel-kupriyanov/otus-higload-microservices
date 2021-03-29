@@ -184,6 +184,7 @@ MAPPING = {
     'create_message': PathInfo(
         path='/messages/',
         service_path='/messages/',
+        service=settings.MESSAGES,
         request_model=MessageCreatePayload,
         response_model=Message,
         status_code=201,
@@ -198,6 +199,7 @@ MAPPING = {
     'get_messages': PathInfo(
         path='/messages/',
         service_path='/messages/',
+        service=settings.MESSAGES,
         response_model=List[Message],
         status_code=200,
         method='GET',
