@@ -1,0 +1,56 @@
+version: '3.3'
+
+services:
+  messages-master:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: messages-mysql-master
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: otus
+      MYSQL_USER: otus
+      MYSQL_PASSWORD: otus
+      MYSQL_ROOT_PASSWORD: 'otus'
+    ports:
+      - 3446:3306
+    volumes:
+      - messages-mysql-master-db:/var/lib/mysql
+
+  shard0:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql-shard0
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: otus
+      MYSQL_USER: otus
+      MYSQL_PASSWORD: otus
+      MYSQL_ROOT_PASSWORD: 'otus'
+    ports:
+      - 3440:3306
+    volumes:
+      - mysql-shard0:/var/lib/mysql
+
+  shard1:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: mysql-shard1
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: otus
+      MYSQL_USER: otus
+      MYSQL_PASSWORD: otus
+      MYSQL_ROOT_PASSWORD: 'otus'
+    ports:
+      - 3441:3306
+    volumes:
+      - mysql-shard1:/var/lib/mysql
+
+
+volumes:
+  messages-mysql-master-db:
+  mysql-shard0:
+  mysql-shard1:
+
+
+

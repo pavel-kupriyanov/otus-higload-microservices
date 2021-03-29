@@ -1,0 +1,19 @@
+{
+  "DATABASE": {
+    "MASTER": {
+      "HOST": "localhost",
+      "PORT": 3306,
+      "USER": "otus",
+      "PASSWORD": "otus",
+      "NAME": "otus"
+    },
+    "SLAVES": []
+  },
+  "UVICORN": {
+    "ASGI_PATH": "web:app",
+    "HOST": "0.0.0.0",
+    "PORT": 8000,
+    "WORKERS": 4
+  }
+}
+
