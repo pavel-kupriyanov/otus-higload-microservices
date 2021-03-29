@@ -1,13 +1,11 @@
 from typing import Optional
 from functools import lru_cache
-from datetime import datetime
 
 from fastapi import (
     Header,
     Depends,
     Request,
     WebSocket,
-    HTTPException
 )
 from social_network.db.models import User
 from social_network.db.managers import (
@@ -21,7 +19,6 @@ from social_network.db.managers import (
     NewsManager,
 )
 from social_network.db.sharding.managers import MessagesManager
-from social_network.db.exceptions import RowsNotFoundError
 from social_network.services import (
     DependencyInjector,
     KafkaProducer,
@@ -112,25 +109,13 @@ def get_redis_client(injector=Depends(get_injector_depends)) -> RedisService:
 
 
 @lru_cache(1)
-def get_ws_service(injector=Depends(get_injector_depends)) -> FeedWebSocketService:
+def get_ws_service(
+        injector=Depends(get_injector_depends)) -> FeedWebSocketService:
     return injector.ws_service
 
 
-async def get_user_id(
-        x_auth_token: Optional[str] = Header(None),
-        access_token_manager: AccessTokenManager = Depends(
-            get_access_token_manager),
-) -> Optional[int]:
-    if x_auth_token is None:
-        return None
-    try:
-        access_token = await access_token_manager.get_by_value(x_auth_token)
-    except RowsNotFoundError:
-        raise HTTPException(status_code=401, detail='Invalid token header')
-    if datetime.fromtimestamp(access_token.expired_at) < datetime.now():
-        raise HTTPException(status_code=400,
-                            detail='Expired token, please re-login')
-    return access_token.user_id
+async def get_user_id(x_user_id: Optional[int] = Header(None)) -> Optional[int]:
+    return x_user_id
 
 
 async def get_user(
@@ -142,11 +127,12 @@ async def get_user(
     return await user_manager.get(user_id)
 
 
-async def get_ws_user(ws: WebSocket, injector=Depends(get_injector_depends)) \
+async def get_ws_user(
+        ws: WebSocket,
+        injector=Depends(get_injector_depends)) \
         -> Optional[User]:
     await ws.accept()
     auth = await ws.receive_json()
-    token_manager = get_access_token_manager(injector)
+    user_id = await get_user_id(int(auth['value']))
     users_manager = get_user_manager(injector)
-    user_id = await get_user_id(auth['value'], token_manager)
     return await get_user(user_id, users_manager)

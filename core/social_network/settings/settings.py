@@ -8,7 +8,8 @@ from social_network.settings.base import (
     RedisSettings,
     NewsCacheSettings,
     RabbitMQSettings,
-    MasterSlaveDatabaseSettings
+    MasterSlaveDatabaseSettings,
+    AuthServiceSettings
 )
 
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,6 +29,7 @@ class Settings(BaseSettings):
     REDIS: RedisSettings = RedisSettings()
     RABBIT: RabbitMQSettings = RabbitMQSettings()
     NEWS_CACHE: NewsCacheSettings = NewsCacheSettings()
+    AUTH_SERVICE = AuthServiceSettings = AuthServiceSettings()
     TOKEN_EXPIRATION_TIME = 60 * 60 * 24 * 7
     BASE_PAGE_LIMIT = 10000
 

@@ -1,12 +1,14 @@
 from typing import Callable, Type, Optional
 from inspect import signature, Parameter
 
-from fastapi import Request, APIRouter, Header
+from fastapi import Request, APIRouter, Header, HTTPException
 from fastapi.responses import Response
 
 import httpx
 
 from api_gateway.models.path_info import PathInfo
+from api_gateway.models.response import AccessToken
+from api_gateway.settings import settings
 
 
 def add_param(func: Callable, name: str, annotation: Type,
@@ -30,19 +32,37 @@ def delete_kwargs(func: Callable):
     func.__signature__ = sig.replace(parameters=params)
 
 
+async def get_token_by_value(token: str) -> Optional[AccessToken]:
+    url = f'http://{settings.AUTH.HOST}:{settings.AUTH.PORT}'
+    async with httpx.AsyncClient(base_url=url) as client:
+        response = await client.put(f'/tokens/', json={'value': token})
+    if not response.is_error:
+        return AccessToken(**response.json())
+
+
 def generate_handler(name: str, path_info: PathInfo, router: APIRouter) \
         -> Callable:
     async def handler(request: Request, **kwargs):
+        token = None
+        if path_info.authorized:
+            raw_token = kwargs.get('x_auth_token', '')
+            if not (token := await get_token_by_value(raw_token)):
+                raise HTTPException(status_code=401)
+
         host, port = path_info.service.HOST, path_info.service.PORT
         service_path = path_info.service_path.format(**request.path_params)
         url = f'http://{host}:{port}{service_path}'
+        headers = [(k, v) for k, v in request.headers.items()]
+        if token:
+            headers.append(('x-user-id', str(token.user_id)))
+
         async with httpx.AsyncClient() as client:
             response = await client.request(
                 url=url,
                 method=path_info.method,
                 params=request.query_params,
                 content=await request.body(),
-                headers=[(k, v) for k, v in request.headers.items()]
+                headers=headers
             )
         return Response(
             status_code=response.status_code,

@@ -50,6 +50,7 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     UVICORN: UvicornSettings = UvicornSettings()
     MONOLITH: ServiceSettings = ServiceSettings()
+    AUTH: ServiceSettings = ServiceSettings(PORT=9900)
 
 
 settings = Settings.from_json(CONFIG_PATH)

@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-
+from pydantic import BaseModel
 from fastapi import (
     APIRouter,
     Depends,
@@ -7,9 +6,10 @@ from fastapi import (
     HTTPException
 )
 from fastapi_utils.cbv import cbv
+from httpx import AsyncClient
 
 from social_network.settings import settings
-from social_network.db.models import AccessToken, AuthUser
+from social_network.db.models import AuthUser, Timestamp
 from social_network.db.managers import (
     AuthUserManager,
     AccessTokenManager
@@ -17,10 +17,7 @@ from social_network.db.managers import (
 from social_network.db.exceptions import RowsNotFoundError
 from social_network.utils.security import hash_password
 
-from .utils import (
-    is_valid_password,
-    generate_token_value,
-)
+from .utils import is_valid_password
 
 from .models import (
     LoginPayload,
@@ -31,6 +28,14 @@ from ..depends import (
     get_access_token_manager,
     get_auth_user_manager
 )
+
+
+class AccessToken(BaseModel):
+    id: int
+    value: str
+    user_id: int
+    expired_at: Timestamp
+
 
 router = APIRouter()
 
@@ -55,20 +60,7 @@ class AuthViewSet:
                 detail='Invalid email or password'
             )
 
-        expired_at = datetime.now() + timedelta(
-            seconds=settings.TOKEN_EXPIRATION_TIME
-        )
-        tokens = await self.access_token_manager.list_user_active(user.id)
-        if not tokens:
-            return await self.access_token_manager.create(
-                user_id=user.id,
-                expired_at=expired_at,
-                value=generate_token_value()
-            )
-        return await self.access_token_manager.update(
-            token_id=tokens[0].id,
-            new_expired_at=expired_at
-        )
+        return await self.create_token(user.id)
 
     @router.post('/register/', status_code=201, response_model=AuthUser,
                  responses={
@@ -95,3 +87,11 @@ class AuthViewSet:
                                               last_name=p.last_name,
                                               city=p.city,
                                               gender=p.gender)
+
+    @staticmethod
+    async def create_token(user_id: int) -> AccessToken:
+        auth_conf = settings.AuthServiceSettings
+        url = f'http://{auth_conf.HOST}:{auth_conf.PORT}'
+        async with AsyncClient(base_url=url) as client:
+            response = await client.post(f'/tokens/{user_id}/')
+        return AccessToken(**response.json())

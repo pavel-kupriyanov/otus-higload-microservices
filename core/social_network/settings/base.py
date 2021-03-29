@@ -67,6 +67,11 @@ class RabbitMQSettings(BaseModel):
     PATH: str = ''
 
 
+class AuthServiceSettings(BaseModel):
+    HOST: str = 'localhost'
+    PORT: int = 9900
+
+
 class BaseSettings(PydanticSettings):
     DEBUG: bool
     UVICORN: UvicornSettings
@@ -75,6 +80,7 @@ class BaseSettings(PydanticSettings):
     REDIS: RedisSettings
     RABBIT: RabbitMQSettings
     NEWS_CACHE: NewsCacheSettings
+    AUTH_SERVICE: AuthServiceSettings
     TOKEN_EXPIRATION_TIME: int
     BASE_PAGE_LIMIT: int
 

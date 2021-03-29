@@ -1,8 +1,9 @@
+from json import loads, dumps
 from typing import List
 from fastapi import APIRouter, WebSocket
 import websockets
 
-from api_gateway.utils import generate_handler
+from api_gateway.utils import generate_handler, get_token_by_value
 from api_gateway.models.response import (
     AccessToken,
     AuthUser,
@@ -298,9 +299,11 @@ async def feed_websocket_proxy(client_ws: WebSocket):
     host, port = settings.MONOLITH.HOST, settings.MONOLITH.PORT
     uri = f'ws://{host}:{port}/news/ws'
     await client_ws.accept()
-    msg = await client_ws.receive_text()
+    auth = loads(await client_ws.receive_text())
+    print(auth)
+    auth['value'] = (await get_token_by_value(auth['value'])).user_id
     async with websockets.connect(uri) as server_ws:
-        await server_ws.send(msg)
+        await server_ws.send(dumps(auth))
         while True:
             msg = await server_ws.recv()
             await client_ws.send_text(msg)

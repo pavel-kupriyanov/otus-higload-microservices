@@ -76,6 +76,7 @@ async def create_token(
 @app.put(
     '/tokens/',
     status_code=200,
+    response_model=AccessToken,
     responses={
         200: {'description': 'Correct token'},
         400: {'description': 'Expired token'},
@@ -84,10 +85,11 @@ async def create_token(
 async def check_token(
         payload: TokenPayload,
         manager: AccessTokenManager = Depends(get_access_token_manager)
-):
+) -> AccessToken:
     try:
         access_token = await manager.get_by_value(payload.value)
     except RowsNotFoundError:
         raise HTTPException(status_code=401, detail='Invalid token')
     if datetime.fromtimestamp(access_token.expired_at) < datetime.now():
         raise HTTPException(status_code=400, detail='Expired token')
+    return access_token

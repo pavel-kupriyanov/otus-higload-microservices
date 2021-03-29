@@ -4,14 +4,10 @@ from datetime import datetime, timedelta
 
 from fastapi import HTTPException
 
-
 from social_network.settings import NewsCacheSettings
 from social_network.db.managers import NewsManager
 from social_network.db.models import TIMESTAMP_FORMAT
 from social_network.services.kafka.producer import KafkaProducer
-
-
-
 
 
 class Order(str, Enum):
