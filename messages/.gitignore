@@ -139,7 +139,7 @@ cython_debug/
 
 
 tests/settings/settings.json
-_settings.json
+social_network_messages/_settings.json
 
 
 
