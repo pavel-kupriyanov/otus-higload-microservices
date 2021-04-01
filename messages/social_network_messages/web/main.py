@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
+from starlette_exporter import PrometheusMiddleware, handle_metrics
 
 from social_network_messages.settings import settings
 from social_network_messages.db.exceptions import RowsNotFoundError
@@ -8,6 +9,8 @@ from social_network_messages.db.connectors_storage import ConnectorsStorage
 from .views import router as api_router
 
 app = FastAPI()
+app.add_middleware(PrometheusMiddleware)
+app.add_route("/metrics", handle_metrics)
 
 
 @app.exception_handler(RowsNotFoundError)

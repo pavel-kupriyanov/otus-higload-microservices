@@ -46,11 +46,30 @@ services:
     volumes:
       - mysql-shard1:/var/lib/mysql
 
+  prometheus:
+    network_mode: host
+    build:
+      context: prometheus
+      dockerfile: Dockerfile
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+
+  grafana:
+    network_mode: host
+    image: grafana/grafana:latest
+    volumes:
+      - grafana_data:/var/lib/grafana
+    ports:
+      - 3000:3000
+
 
 volumes:
   messages-mysql-master-db:
   mysql-shard0:
   mysql-shard1:
-
+  grafana_data:
 
 
