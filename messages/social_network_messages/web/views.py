@@ -70,6 +70,7 @@ class MessagesViewSet:
     @router.get('/', response_model=List[Message], responses={
         200: {'description': 'List of messages.'},
     })
+    @authorize_only
     async def list(self, q: MessageQueryParams = Depends(MessageQueryParams)) \
             -> List[Message]:
         return await self.messages_manager.list(
