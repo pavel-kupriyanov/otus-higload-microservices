@@ -21,7 +21,7 @@ app.add_route("/metrics", handle_metrics)
 
 #### docker-compose
 
-```
+```yaml
   prometheus:
     network_mode: host
     build:
@@ -36,7 +36,7 @@ app.add_route("/metrics", handle_metrics)
 
 #### dockerfile
 
-```
+```yaml
 FROM prom/prometheus:latest
 
 COPY prometheus.yml /etc/prometheus/prometheus.yml
@@ -65,7 +65,7 @@ scrape_configs:
 
 #### docker-compose
 
-```
+```yaml
     grafana:
     network_mode: host
     image: grafana/grafana:latest
@@ -99,3 +99,99 @@ scrape_configs:
 
 
 ## Zabbix
+
+### Сервер
+Для функционирования zabbix-сервера необходима база данных:
+```yaml
+  zabbix-mysql:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    container_name: zabbix-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: zabbix
+      MYSQL_ROOT_PASSWORD: 'zabbix'
+    ports:
+      - 3116:3306
+    volumes:
+      - zabbix-mysql-data1:/var/lib/mysql
+```
+
+Используем докер для разворачивания сервера:
+```yaml
+  zabbix-server:
+    restart: always
+    image: zabbix/zabbix-server-mysql:latest
+    ports:
+      - 10050:10050
+      - 10051:10051
+    environment:
+      DB_SERVER_HOST: zabbix-mysql
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: zabbix
+      MYSQL_ROOT_PASSWORD: 'zabbix'
+    depends_on:
+      - zabbix-mysql
+```
+
+Проверим работоспособность сервера:
+
+```
+telnet localhost 10051
+Trying 127.0.0.1...
+Connected to localhost.
+```
+
+### Веб-интерфейс
+
+```yaml
+  zabbix-web-new-name:
+    image: zabbix/zabbix-web-apache-mysql:latest
+    container_name: zabbix-web
+    environment:
+      DB_SERVER_HOST: zabbix-mysql
+      MYSQL_USER: zabbix
+      MYSQL_PASSWORD: zabbix
+      MYSQL_ROOT_PASSWORD: 'zabbix'
+      ZBX_SERVER_HOST: zabbix-server
+      PHP_TZ: UTC
+    ports:
+      - '8080:8080'
+      - '443:443'
+    links:
+      - zabbix-mysql
+      - zabbix-server
+    depends_on:
+      - zabbix-mysql
+      - zabbix-server
+```
+
+### Агент
+
+Так как сервер развернут в докере у нас нет возможности по умолчанию собирать метрики с локальной машины с приложением (
+разумеется это можно настроить). Поэтому сконфигурируем агента в активном режиме, чтобы тот сам отправлял метрики на сервер.
+
+Установим агент:
+` apt install zabbix-agent`
+Изменим конфигурацию:
+```
+Server=127.0.0.1
+ServerActive=127.0.0.1:10051
+```
+
+### Настройка
+
+В веб-интерфейсе необходимо добавить действие autodiscover, чтобы создать хост при подключении активного агента:
+
+![](./images/metrics/zabbix-add-action.png)
+![](./images/metrics/zabbix-add-operation.png)
+
+
+Затем найденному хосту нужно добавить items с техническими метриками:
+
+![](./images/metrics/zabbix-action-item.png)
+
+И создать graph для мониторинга:
+
+![](./images/metrics/zabbix-graph.png)
